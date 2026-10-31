@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}{{ portal_title }} | {{ school_name }}{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="hero-copy">
+    <span class="eyebrow">STUDENT RESULT PORTAL · {{ academic_year }}</span>
+    <h1>{{ portal_title }}</h1>
+    <p>Enter your roll number to view your subject-wise marks and result summary.</p>
+  </div>
+  <div class="search-card">
+    <form method="post" action="{{ url_for('home') }}">
+      <label for="roll_number">Roll number</label>
+      <div class="search-row"><input id="roll_number" name="roll_number" value="{{ searched_roll }}" placeholder="Enter your roll number" required autocomplete="off"><button type="submit">View result <span>→</span></button></div>
+    </form>
+    <small>For result-related help, please contact the school office.</small>
+  </div>
+</section>
+{% if result and calculation %}
+<section class="result-card">
+  <div class="result-heading"><div><span class="eyebrow">STUDENT REPORT</span><h2>{{ result['student_name'] }}</h2><p>Roll No. {{ result['roll_number'] }}</p></div><span class="status-pill {{ 'complete' if calculation.complete else 'pending' }}">{{ 'Marks complete' if calculation.complete else 'Marks pending' }}</span></div>
+  <div class="student-meta">
+    <div><span>Father's name</span><strong>{{ result['father_name'] or '—' }}</strong></div>
+    <div><span>Mother's name</span><strong>{{ result['mother_name'] or '—' }}</strong></div>
+    <div><span>Date of birth</span><strong>{{ result['dob'] or '—' }}</strong></div>
+  </div>
+  <div class="table-wrap"><table class="marks-table"><thead><tr><th>Subject</th><th>Maximum</th><th>Marks obtained</th></tr></thead><tbody>
+    {% for subject in subjects %}<tr><td>{{ subject }}</td><td>50</td><td>{% set mark = calculation.marks[subject] %}{% if mark is none %}<span class="na">Pending / NA</span>{% else %}{{ mark|int if mark == mark|int else mark }}{% endif %}</td></tr>{% endfor %}
+  </tbody></table></div>
+  <div class="summary-grid">
+    {% if calculation.complete %}
+      <div class="summary-tile"><span>Total marks</span><strong>{{ calculation.total|int if calculation.total == calculation.total|int else calculation.total }} / {{ calculation.maximum }}</strong></div>
+      <div class="summary-tile"><span>Percentage</span><strong>{{ '%.2f'|format(calculation.percentage) }}%</strong></div>
+      <div class="summary-tile"><span>Data status</span><strong class="green-text">Complete</strong></div>
+    {% else %}
+      <div class="summary-tile"><span>Marks entered</span><strong>{{ calculation.entered_count }} / 8 subjects</strong></div>
+      <div class="summary-tile"><span>Final total</span><strong class="amber-text">Pending</strong></div>
+      <div class="summary-tile"><span>Pending subjects</span><strong class="amber-text">{{ calculation.missing_subjects|join(', ') }}</strong></div>
+    {% endif %}
+  </div>
+  <p class="result-note">{{ 'Total and percentage are calculated from all eight subjects.' if calculation.complete else 'Final total and percentage will appear after all eight subject marks are entered. Blank, NA and dash values are not treated as zero.' }}</p>
+  <button class="print-button" onclick="window.print()" type="button">Print result</button>
+</section>
+{% endif %}
+<section class="info-strip"><div><strong>8 subjects</strong><span>As listed in the school's result sheet</span></div><div><strong>50 marks each</strong><span>Maximum 400 marks in total</span></div><div><strong>Need help?</strong><span>Contact the school office</span></div></section>
+{% endblock %}

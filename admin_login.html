@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% block title %}Admin Login | {{ school_name }}{% endblock %}
+{% block content %}
+<section class="login-shell"><div class="login-card"><span class="eyebrow">SCHOOL MANAGEMENT</span><h1>Admin login</h1><p>Sign in to import the Google Sheets result CSV and manage the local result database.</p>
+<form method="post"><label for="password">Admin password</label><input id="password" type="password" name="password" placeholder="Enter admin password" required autofocus><button class="full-button" type="submit">Login to dashboard →</button></form>
+<p class="tiny-note">Local practice password is shown in README_HINGLISH.txt. Change it before any public deployment.</p></div></section>
+{% endblock %}

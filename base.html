@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ school_name }} | Result Portal{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="{{ url_for('home') }}">
+      <span class="brand-mark">ABC</span>
+      <span><strong>{{ school_name }}</strong><small>{{ school_location if school_location is defined else 'School Result Portal' }}</small></span>
+    </a>
+    <nav><a href="{{ url_for('home') }}">Student Portal</a><a href="{{ url_for('admin_login') }}">Admin</a></nav>
+  </header>
+  <main class="page-wrap">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}<section class="flash-list">{% for category, message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}</section>{% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+  <footer class="footer">{{ school_name }} · {{ school_location if school_location is defined else 'Lahar' }} · Local result portal</footer>
+</body>
+</html>

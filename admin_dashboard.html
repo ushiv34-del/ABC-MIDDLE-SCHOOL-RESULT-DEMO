@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard | {{ school_name }}{% endblock %}
+{% block content %}
+<section class="admin-heading"><div><span class="eyebrow">SCHOOL ADMINISTRATION</span><h1>Result dashboard</h1><p>Import the CSV downloaded from your Google Sheet.</p></div><form method="post" action="{{ url_for('admin_logout') }}"><button class="quiet-button" type="submit">Log out</button></form></section>
+<section class="stats-grid"><div class="stat-card"><span>Total students</span><strong>{{ student_count }}</strong></div><div class="stat-card"><span>All 8 subjects entered</span><strong>{{ complete_count }}</strong></div><div class="stat-card"><span>Marks pending</span><strong>{{ pending_count }}</strong></div></section>
+<section class="admin-card"><div class="section-heading"><div><span class="eyebrow">DATA IMPORT</span><h2>Upload Google Sheets CSV</h2></div><span class="file-badge">.CSV</span></div>
+<p class="muted">Use Google Sheets → File → Download → Comma-separated values (.csv). Your uploaded file's headings are supported, including the trailing space in “Total ”.</p>
+<form class="upload-form" method="post" action="{{ url_for('import_results') }}" enctype="multipart/form-data">
+  <label for="csv_file">Choose your CSV file</label><input id="csv_file" type="file" name="csv_file" accept=".csv,text/csv" required><button type="submit">Import / update student records →</button>
+</form>
+<div class="format-box"><strong>Expected columns from your file</strong><p>Roll number · Student's name · Father's Name · Mother's Name · DOB · Science · Hindi · English · Sanskrit · Math · SST · Computer · GK · Total</p><small>The Total column is ignored and recalculated. Completely blank rows are skipped. Blank, NA, N/A and dash marks are saved as pending.</small></div>
+<div class="admin-actions"><a class="secondary-link" href="{{ url_for('export_backup') }}">Download database backup CSV ↓</a><a class="secondary-link" href="{{ url_for('static', filename='middle_result_template.csv') }}">Download blank template ↓</a></div>
+</section>
+<section class="warning-card"><strong>Important notes</strong><ul><li>This uploaded sheet has no Class or Section column, so this version identifies a student by Roll Number within this result dataset.</li><li>Importing again updates students with matching roll numbers and adds new ones. It does not delete older records.</li><li>Marks are configured out of 50 per subject because the uploaded sheet's values follow that scale. Verify the school's official maximum marks.</li><li>Do not put this local prototype online with real student data until proper authentication, privacy controls and secure hosting are added.</li></ul></section>
+{% endblock %}
